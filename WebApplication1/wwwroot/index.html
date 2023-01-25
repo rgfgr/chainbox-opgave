@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/stylesheet.css" rel="stylesheet">
+    <script type="text/javascript" src="/js/script.js"></script>
+    <title>Super Cyklisterne</title>
+</head>
+<body>
+    <header>
+        <div id="header">
+            <H1>Super Cyklisterne</H1>
+        </div>
+        <div id="menuBar">
+            <nav id="headNav">
+                <div class="button" id="Front" onclick="go('/Forside.html', 'Front')">
+                    <p>Forside</p>
+                </div>
+                <div class="button" id="members" onclick="go('/Medlemmer.html', 'members')">
+                    <p>Medlemmer</p>
+                </div>
+                <div class="button" id="about" onclick="go('/Forside.html', 'about')">
+                    <p>Om klubben</p>
+                </div>
+                <div class="button" id="acount" onclick="go('/Forside.html', 'acount')">
+                    <p>Medlemsområde</p>
+                </div>
+                <div class="button" id="logout">
+                    <p onclick="logout()">Logud</p>
+                </div>
+            </nav>
+            <div id="bar"></div>
+        </div>
+    </header>
+    <iframe id="main" src="/Forside.html" title="Forside"></iframe>
+    <footer>
+        <p>Denne hjemmeside tilhører Super Cyklisterne - <a href="#">send os en mail</a></p>
+    </footer>
+</body>
+</html>
