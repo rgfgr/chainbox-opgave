@@ -11,24 +11,27 @@ function getMedlemer() {
 function getImages(data) {
     console.log(data);
     for (item of data) {
+        console.log('test');
         console.log(item);
     }
     tBody = document.getElementById('main');
     tBody.innerHTML = '';
     data.forEach(item => {
-        fetch(uri + '/' + item.Id + '/Images')
+        fetch(uri + '/' + item.id + '/Images')
             .then(response => response.json())
-            .then(data => _displayItem(data))
+            .then(data => _displayItem(data, item.name))
             .catch(error => console.error('Unable to get images for ' + item.name, error));
     })
 }
 
-function _displayItem(data) {
+function _displayItem(data, itemName) {
     console.log(data);
+    console.log(itemName);
     let divGal = document.createElement('div');
     divGal.className = 'gallery';
 
-    let path = '../imgs/' + data[getRndInteger(data.length)].name;
+    let image = data[getRndInteger(data.length)];
+    let path = '../imgs/' + image.name;
 
     let a = document.createElement('a');
     a.target = '_blank';
@@ -41,6 +44,7 @@ function _displayItem(data) {
 
     let divDesc = document.createElement('div');
     divDesc.className = 'desc';
+    divDesc.innerHTML = image.name + ' by ' + itemName;
 
     a.appendChild(img);
     divGal.appendChild(a);
