@@ -27,6 +27,21 @@ namespace WebApplication1.Controllers
             Email = member.Email
         };
 
+        [HttpPost("Login/{email}")]
+        public async Task<ActionResult<string>> LogIn(string email, [FromBody] string pass)
+        {
+            var member = await _context.Members.SingleOrDefaultAsync(x => x.Email == email);
+            if (member == null)
+            {
+                return NotFound("Email not found");
+            }
+            if (member.Pass != pass.ToSHA256String())
+            {
+                return BadRequest("Password is wrong");
+            }
+            return Ok(member.Id);
+        }
+
         // GET: api/Members
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDTO>>> GetMembers()
@@ -90,22 +105,26 @@ namespace WebApplication1.Controllers
 
         // Post: api/Members/5
         [HttpPost("{id}")]
-        public async Task<ActionResult<Image>> AddPicture(string id, Image image)
+        public async Task<ActionResult<Image>> AddPicture(string id, IFormFile formImage)
         {
-            if (id != image.MemberId)
-            {
-                return BadRequest();
-            }
             if (!MemberExists(id))
             {
                 return NotFound();
             }
 
+            var name = formImage.Name;
+
+            Image image = new()
+            {
+                MemberId = id,
+                Name = name,
+            };
+
             _context.Images.Add(image);
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMemberImages), new { id }, image);
+            return Ok(formImage);
         }
 
         // POST: api/Members

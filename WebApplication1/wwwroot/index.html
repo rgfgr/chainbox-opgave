@@ -24,9 +24,10 @@
                 <div class="button" id="about" onclick="go('/Forside.html', 'about')">
                     <p>Om klubben</p>
                 </div>
-                <div class="button" id="acount" onclick="go('/Forside.html', 'acount')">
+                <div class="button" id="acount" onclick="go('/Medlem.html', 'acount')">
                     <p>Medlemsområde</p>
                 </div>
+                <div id="failed"></div>
                 <div class="button" id="logout">
                     <p onclick="logout()">Logud</p>
                 </div>
@@ -34,7 +35,7 @@
             <div id="bar"></div>
         </div>
     </header>
-    <iframe id="main" src="/Forside.html" title="Forside"></iframe>
+    <iframe id="main" src="/Forside.html" title="Forside" name="main"></iframe>
     <footer>
         <p>Denne hjemmeside tilhører Super Cyklisterne - <a href="#">send os en mail</a></p>
     </footer>
