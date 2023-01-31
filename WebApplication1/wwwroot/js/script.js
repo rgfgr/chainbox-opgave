@@ -20,7 +20,7 @@ function getImages(data) {
     tBody = document.getElementById('main');
     tBody.innerHTML = '';
     data.forEach(item => {
-        fetch(uri + '/' + item.id + '/Images')
+        fetch('api/Image/' + item.id + '/Images')
             .then(response => response.json())
             .then(data => _displayItem(data, item.name))
             .catch(error => console.error('Unable to get images for ' + item.name, error));
@@ -34,7 +34,7 @@ function _displayItem(data, itemName) {
     divGal.className = 'gallery';
 
     let image = data[getRndInteger(data.length)];
-    let path = '../imgs/' + image.name;
+    let path = '../imgs/' + image.filepath;
 
     let a = document.createElement('a');
     a.target = '_blank';
@@ -75,7 +75,8 @@ function go(loc, item) {
 }
 
 function login(data) {
-    member = data
+    member = data;
+    console.log(data);
     console.log('login');
     logedin = true;
     document.getElementById('logout').style.display = 'block';
@@ -83,5 +84,6 @@ function login(data) {
 }
 
 function getMemberId() {
+    console.log(member);
     return member;
 }

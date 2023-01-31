@@ -51,13 +51,6 @@ namespace WebApplication1.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/Members/5/Images
-        [HttpGet("{id}/Images")]
-        public async Task<ActionResult<IEnumerable<Image>>> GetMemberImages(string id)
-        {
-            return await _context.Images.Where(x => x.MemberId == id).ToListAsync();
-        }
-
         // GET: api/Members/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MemberDTO>> GetMember(string id)
@@ -103,30 +96,6 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
-        // Post: api/Members/5
-        [HttpPost("{id}")]
-        public async Task<ActionResult<Image>> AddPicture(string id, IFormFile formImage)
-        {
-            if (!MemberExists(id))
-            {
-                return NotFound();
-            }
-
-            var name = formImage.Name;
-
-            Image image = new()
-            {
-                MemberId = id,
-                Name = name,
-            };
-
-            _context.Images.Add(image);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(formImage);
-        }
-
         // POST: api/Members
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -155,27 +124,6 @@ namespace WebApplication1.Controllers
 
             _context.Members.Remove(member);
             _context.Images.RemoveRange(images);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // DELETE: api/Members/5/5
-        [HttpDelete("{id}/{name}")]
-        public async Task<IActionResult> DeleteImage(string id, string name)
-        {
-            if (!MemberExists(id))
-            {
-                return NotFound();
-            }
-
-            Image? image = _context.Images.FirstOrDefault(x => x.MemberId == id && x.Name == name);
-            if (image == null)
-            {
-                return NotFound();
-            }
-
-            _context.Images.Remove(image);
             await _context.SaveChangesAsync();
 
             return NoContent();
