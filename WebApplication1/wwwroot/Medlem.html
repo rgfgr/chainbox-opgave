@@ -31,10 +31,16 @@
             const formData = new FormData(oFormElement);
 
             try {
-                const response = await fetch(oFormElement.action + window.parent.getMemberId(), {
+                const task = fetch(oFormElement.action + window.parent.getMemberId(), {
                     method: 'POST',
                     body: formData
                 });
+
+                for (var i in formData.entries()) {
+                    console.log(i);
+                }
+                console.log(await (await task).json());
+                const response = await task;
 
                 if (response.ok) {
                     console.log(response.json());

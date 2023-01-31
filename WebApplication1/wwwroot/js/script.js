@@ -77,6 +77,7 @@ function go(loc, item) {
 function login(data) {
     member = data;
     console.log(data);
+    document.getElementById('failed').innerHTML = '';
     console.log('login');
     logedin = true;
     document.getElementById('logout').style.display = 'block';

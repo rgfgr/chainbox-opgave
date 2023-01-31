@@ -17,10 +17,15 @@ function login() {
         }
     }).then((response) => {
         console.log(response);
-        failtext.innerHTML = '';
-        window.parent.login(response.text());
+        let res = response.text();
+        console.log(res);
+        if (response.status === 200) {
+            res.then(ress => window.parent.login(ress));
+        }
+        else {
+            res.then(ress => failtext.innerHTML = ress);
+        }
     }).catch((error) => {
-        failtext.innerHTML = error;
         console.error(error);
     });
 }
