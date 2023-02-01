@@ -9,6 +9,8 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
+        private readonly static string[] extentions = { ".png", ".jpg", ".jpeg" };
+        private static Random rand = new();
         private readonly CykleContext _context;
         private readonly IWebHostEnvironment _environment;
 
@@ -19,14 +21,22 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/Image/5/Images
-        [HttpGet("{id}/Images")]
-        public async Task<ActionResult<IEnumerable<Image>>> GetMemberImages(string id)
+        [HttpGet("{memberId}/Images")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetMemberImages(string memberId)
         {
-            return await _context.Images.Where(x => x.MemberId == id).ToListAsync();
+            return await _context.Images.Where(x => x.MemberName == memberId).ToListAsync();
         }
 
-        [HttpPost("{memberId}")]
-        public async Task<ActionResult> UploadImage(string memberId, IFormFile formFile)
+        // GET: api/Image/5/Random
+        [HttpGet("{memberId}/Random")]
+        public async Task<ActionResult<Image>> GetRandomImage(string memberId)
+        {
+            List<Image> images = await _context.Images.Where(x => x.MemberName == memberId).ToListAsync();
+            return images[rand.Next(images.Count)];
+        }
+
+        [HttpPost("{memberId}&{name}")]
+        public async Task<ActionResult> UploadImage(string memberId, string name, IFormFile formFile)
         {
             if (!MemberExists(memberId))
             {
@@ -38,7 +48,14 @@ namespace WebApplication1.Controllers
 
             try
             {
-                Filename = $"{Path.GetFileNameWithoutExtension(Path.GetRandomFileName())}{Path.GetExtension(formFile.FileName)}";
+                string tempFileName = Path.GetRandomFileName();
+                string tempName = Path.GetFileNameWithoutExtension(tempFileName);
+                string tempExt = Path.GetExtension(formFile.FileName);
+                if (!extentions.Contains(tempExt))
+                {
+                    return BadRequest("Invalid file type");
+                }
+                Filename = $"{tempName}{tempExt}";
                 Filepath = GetFilePath(memberId);
 
                 if (!Directory.Exists(Filepath))
@@ -55,8 +72,8 @@ namespace WebApplication1.Controllers
                 _ = _context.Images.Add(new()
                 {
                     Filepath = $"{memberId}/{Filename}",
-                    MemberId = memberId,
-                    Name = formFile.Name
+                    MemberName = memberId,
+                    Name = name
                 });
                 await _context.SaveChangesAsync();
             }
@@ -75,7 +92,7 @@ namespace WebApplication1.Controllers
 
         private bool MemberExists(string id)
         {
-            return (_context.Members?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Members?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

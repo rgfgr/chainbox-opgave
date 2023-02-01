@@ -4,13 +4,14 @@ form {
 }
 
 /* Full-width inputs */
-input[type=text], input[type=password] {
-    width: 100%;
+input[type=email], input[type=password], input[type=text] {
+    width: max-content;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    text-align:center;
 }
 
 /* Set a style for all buttons */
@@ -21,7 +22,7 @@ button {
     margin: 8px 0;
     border: none;
     cursor: pointer;
-    width: 100%;
+    width: max-content;
 }
 
 /* Add a hover effect for buttons */
@@ -32,4 +33,20 @@ button:hover {
 /* Add padding to containers */
 .container {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+html, body{
+    height: 100%;
+    margin: 0;
+}
+
+.base {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
 }

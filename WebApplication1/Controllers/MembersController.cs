@@ -15,15 +15,16 @@ namespace WebApplication1.Controllers
     public class MembersController : ControllerBase
     {
         private readonly CykleContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public MembersController(CykleContext context)
+        public MembersController(CykleContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         private static MemberDTO MemberToDTO(Member member) => new()
         {
-            Id = member.Id,
-            Name = member.Name,
+            ID = member.ID,
             Email = member.Email
         };
 
@@ -39,7 +40,7 @@ namespace WebApplication1.Controllers
             {
                 return BadRequest("Password is wrong");
             }
-            return Ok(member.Id);
+            return Ok(member.ID);
         }
 
         // GET: api/Members
@@ -67,28 +68,28 @@ namespace WebApplication1.Controllers
 
         // PUT: api/Members/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMember(string id, Member memberDTO)
+        [HttpPut("{memberId}")]
+        public async Task<IActionResult> PutMember(string memberId, Member memberDTO)
         {
-            if (id != memberDTO.Id)
+            if (memberId != memberDTO.ID)
             {
                 return BadRequest();
             }
 
-            Member? member = await _context.Members.FindAsync(id);
+            Member? member = await _context.Members.FindAsync(memberId);
             if (member == null)
             {
                 return NotFound();
             }
 
-            member.Name = memberDTO.Name;
+            member.ID = memberDTO.ID;
             member.Pass = memberDTO.Pass.ToSHA256String();
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException) when (!MemberExists(id))
+            catch (DbUpdateConcurrencyException) when (!MemberExists(memberId))
             {
                 return NotFound();
             }
@@ -99,39 +100,44 @@ namespace WebApplication1.Controllers
         // POST: api/Members
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MemberDTO>> PostMember(Member member)
+        public async Task<ActionResult<string>> PostMember(Member member)
         {
+            if (_context.Members.Any(x => x.Email == member.Email)) return BadRequest("Email already in use");
+            if (_context.Members.Any(x => x.ID == member.ID)) return BadRequest("Username already in use");
+
             member.Pass = member.Pass.ToSHA256String();
 
             _context.Members.Add(member);
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMember), new { id = member.Id }, MemberToDTO(member));
+            return Ok(_context.Members.Single(x => x.Email == member.Email).ID);
         }
 
         // DELETE: api/Members/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMember(string id)
         {
-            var member = await _context.Members.FindAsync(id);
+            var member = _context.Members.Find(id);
             if (member == null)
             {
                 return NotFound();
             }
 
-            var images = await _context.Images.Where(x => x.MemberId == id).ToListAsync();
+            var images = await _context.Images.Where(x => x.MemberName == id).ToListAsync();
 
             _context.Members.Remove(member);
             _context.Images.RemoveRange(images);
             await _context.SaveChangesAsync();
+
+            Directory.Delete(_environment.WebRootPath + "\\Imgs\\" + id, true);
 
             return NoContent();
         }
 
         private bool MemberExists(string id)
         {
-            return (_context.Members?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Members?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

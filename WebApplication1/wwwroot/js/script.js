@@ -20,20 +20,20 @@ function getImages(data) {
     tBody = document.getElementById('main');
     tBody.innerHTML = '';
     data.forEach(item => {
-        fetch('api/Image/' + item.id + '/Images')
+        fetch('api/Image/' + item.id + '/Random')
             .then(response => response.json())
-            .then(data => _displayItem(data, item.name))
+            .then(data => _displayItem(data))
             .catch(error => console.error('Unable to get images for ' + item.name, error));
     })
 }
 
-function _displayItem(data, itemName) {
-    console.log(data);
+function _displayItem(image) {
+    let itemName = image.memberName;
+    console.log(image);
     console.log(itemName);
     let divGal = document.createElement('div');
     divGal.className = 'gallery';
 
-    let image = data[getRndInteger(data.length)];
     let path = '../imgs/' + image.filepath;
 
     let a = document.createElement('a');
@@ -54,10 +54,6 @@ function _displayItem(data, itemName) {
     divGal.appendChild(divDesc);
 
     tBody.appendChild(divGal);
-}
-
-function getRndInteger(max) {
-    return Math.floor(Math.random() * max);
 }
 
 function go(loc, item) {
@@ -87,4 +83,14 @@ function login(data) {
 function getMemberId() {
     console.log(member);
     return member;
+}
+
+function logout() {
+    member = "";
+    logedin = false;
+    document.getElementById('logout').style.display = 'none';
+    console.log(document.getElementById('main').attributes.src.value);
+    if (document.getElementById('main').attributes.src.value == '/Medlem.html') {
+        go('/Medlem.html', 'acount');
+    }
 }
