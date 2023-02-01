@@ -48,6 +48,7 @@ namespace WebApplication1.Controllers
         public async Task<ActionResult<IEnumerable<MemberDTO>>> GetMembers()
         {
             return await _context.Members
+                .OrderBy(x => x.ID)
                 .Select(x => MemberToDTO(x))
                 .ToListAsync();
         }
@@ -116,12 +117,16 @@ namespace WebApplication1.Controllers
 
         // DELETE: api/Members/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMember(string id)
+        public async Task<IActionResult> DeleteMember(string id, [FromBody] string pass)
         {
             var member = _context.Members.Find(id);
             if (member == null)
             {
                 return NotFound();
+            }
+            if (member.Pass != pass.ToSHA256String())
+            {
+                return BadRequest("Password is wrong");
             }
 
             var images = await _context.Images.Where(x => x.MemberName == id).ToListAsync();

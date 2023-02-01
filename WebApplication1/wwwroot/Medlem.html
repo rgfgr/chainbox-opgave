@@ -2,35 +2,45 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="js/medlem.js"></script>
+    <link rel="stylesheet" href="css/Medlem.css" />
     <title></title>
 </head>
 <body>
-    <form action="api/Image/"
-          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
-          method="post">
-        <dl>
-            <dt>
-                <label for="FileUpload_FormFile">File</label>
-            </dt>
-            <dd>
-                <input id="FileUpload_FormFile" type="file"
-                       name="formFile" />
-            </dd>
-            <dt>
-                <label for="FileUpload_Name">Name</label>
-            </dt>
-            <dd>
-                <input id="FileUpload_Name" type="text"
-                       name="name" />
-            </dd>
-        </dl>
+    <div id="notimg">
+        <form action="api/Image/"
+              enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
+              method="post">
+            <dl>
+                <dt>
+                    <label for="FileUpload_FormFile">File</label>
+                </dt>
+                <dd>
+                    <input id="FileUpload_FormFile" type="file"
+                           name="formFile" />
+                </dd>
+                <dt>
+                    <label for="FileUpload_Name">Name</label>
+                </dt>
+                <dd>
+                    <input id="FileUpload_Name" type="text"
+                           name="name" />
+                </dd>
+            </dl>
 
-        <input class="btn" type="submit" value="Upload" />
+            <input class="btn" type="submit" value="Upload" />
 
-        <div style="margin-top:15px">
-            <output name="result"></output>
-        </div>
-    </form>
+            <div style="margin-top:15px">
+                <output name="result"></output>
+            </div>
+        </form>
+    </div>
+    <div id="img">
+
+    </div>
+    <script type="text/javascript">
+        _getImages();
+    </script>
 </body>
 </html>

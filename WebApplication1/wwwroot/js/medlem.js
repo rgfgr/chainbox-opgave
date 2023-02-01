@@ -1,4 +1,4 @@
-﻿
+﻿let tBody;
 async function AJAXSubmit(oFormElement) {
     var resultElement = oFormElement.elements.namedItem("result");
     const route = `${oFormElement.action}${window.parent.getMemberId()}&${oFormElement.elements.namedItem("name").value}`;
@@ -30,4 +30,59 @@ async function AJAXSubmit(oFormElement) {
     } catch (error) {
         console.error('Error:', error);
     }
+
+    _getImages();
+}
+
+async function _getImages() {
+    tBody = document.getElementById('img');
+    tBody.innerHTML = '';
+    const response = await fetch('api/Image/' + window.parent.getMemberId() + '/Images');
+    console.log(response);
+    const result = await response.json();
+    console.log(result);
+    for (const image of result) {
+        console.log(image);
+        _displayItem(image);
+    }
+}
+
+function _displayItem(image) {
+    console.log(image);
+    let divGal = document.createElement('div');
+    divGal.className = 'gallery';
+
+    let path = '../imgs/' + image.filepath;
+
+    let a = document.createElement('a');
+    a.target = '_blank';
+    a.href = path;
+
+    let img = document.createElement('img');
+    img.src = path;
+
+    let divDesc = document.createElement('div');
+    divDesc.className = 'desc';
+    divDesc.innerHTML = image.name;
+
+    let btn = document.createElement('button');
+    btn.className = 'deletebtn';
+    btn.innerHTML = 'delete';
+    btn.onclick = event => _deleteImg(image.id);
+
+    divDesc.appendChild(btn);
+    a.appendChild(img);
+    divGal.appendChild(a);
+    divGal.appendChild(divDesc);
+
+    tBody.appendChild(divGal);
+}
+
+async function _deleteImg(imageId) {
+    const response = await fetch('api/Image/' + imageId, {
+        method: 'delete'
+    });
+
+    console.log(response);
+    _getImages();
 }

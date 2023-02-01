@@ -58,10 +58,7 @@ namespace WebApplication1.Controllers
                 Filename = $"{tempName}{tempExt}";
                 Filepath = GetFilePath(memberId);
 
-                if (!Directory.Exists(Filepath))
-                {
-                    Directory.CreateDirectory(Filepath);
-                }
+                Directory.CreateDirectory(Filepath);
 
                 imagePath = Filepath + "\\" + Filename;
                 using (FileStream stream = System.IO.File.Create(imagePath))
@@ -82,6 +79,20 @@ namespace WebApplication1.Controllers
                 return BadRequest(ex + $"\nFilename: {Filename}\nFilepath: {Filepath}\nimagePath {imagePath}");
             }
             return Ok(results);
+        }
+
+        // Delete: api/Image/5
+        [HttpDelete("{imageId}")]
+        public async Task<IActionResult> DeleteImg(long imageId)
+        {
+            var image = _context.Images.Find(imageId);
+            if (image == null) return NotFound();
+
+            System.IO.File.Delete(GetFilePath(image.Filepath));
+
+            _context.Images.Remove(image);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [NonAction]
